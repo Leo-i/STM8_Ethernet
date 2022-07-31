@@ -1,4 +1,3 @@
-
 #include "stm8l15x.h"
 
 #include "w5500.h"
@@ -27,26 +26,57 @@ void sysInit(){
   
   //Set network information
   wizchip_setnetinfo(&gWIZNETINFO);
-  setSHAR(gWIZNETINFO.mac);
+  ctlnetwork(CN_SET_NETINFO, (void*) &gWIZNETINFO);
+  uint8_t W5500_buff_size[8] = {2, 2, 2, 2, 2, 2, 2, 2, };
+  wizchip_init(W5500_buff_size, W5500_buff_size);
   
   Usart_print("Initialization complete");
 }
-uint8_t data_buf[20] = "Hello world. I'm Lev";
+
+uint8_t gDATABUF[DATA_BUF_SIZE];
+
+uint8_t error;
+char Message[128] = "Hello world, It's a Lev";
 int main( void )
 {
   sysInit();
   
-  
-    while(1){
-    socket(SOCKET_0, MACRAW_protocol, 0x0138, 2);
-    delay_ms(200);
-    send(SOCKET_0,data_buf,20);
-    delay_ms(200);
-    close(SOCKET_0);
+  while(1){
+      
+    error = socket(HTTP_SOCKET, Sn_MR_TCP, 80, 0);
+    if(error != HTTP_SOCKET){
+      Usart_print("socket failed");
+    }else{ 
+      Usart_print("Socket created, connecting...");
+    }
+      
+    error = listen(HTTP_SOCKET);
+    if(error != SOCK_OK){
+      Usart_print("listen failed");
+    }else{ 
+      Usart_print("listen OK");
+    }
+		
+    while(getSn_SR(HTTP_SOCKET) == SOCK_LISTEN){
+      delay_ms(200);
+    }
+    
+    Usart_print("Input connection");
+    if(getSn_SR(HTTP_SOCKET) != SOCK_ESTABLISHED) Usart_print("Error socket status");
+    
+    uint8_t rIP[4];
+    getsockopt(HTTP_SOCKET, SO_DESTIP, rIP);
+    Usart_print(rIP);
+		
+    send(0, (uint8_t*)Message, 23);
+    
+    disconnect(HTTP_SOCKET);
+    
+    Usart_print("Closing socket");
+    close(HTTP_SOCKET);
+				
+    delay_ms(1000);    
   }
   
   
 }
-
-
-
