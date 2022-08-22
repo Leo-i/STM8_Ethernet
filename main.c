@@ -1,4 +1,3 @@
-
 #include "stm8l15x.h"
 
 #include "w5500.h"
@@ -9,6 +8,7 @@
 #include <delay.h>
 #include <uart_connection.h>
 #include <W5500_driver.h>
+#include <sensor.h>
 
 wiz_NetInfo gWIZNETINFO = 
 {
@@ -23,30 +23,47 @@ wiz_NetInfo gWIZNETINFO =
 void sysInit(){
   CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
   Usart_Init();
-  W5500_Init();
+  //W5500_Init();
+  init_sensors();
   
   //Set network information
-  wizchip_setnetinfo(&gWIZNETINFO);
-  setSHAR(gWIZNETINFO.mac);
+ // wizchip_setnetinfo(&gWIZNETINFO);
+  //ctlnetwork(CN_SET_NETINFO, (void*) &gWIZNETINFO);
+  //uint8_t W5500_buff_size[8] = {2, 2, 2, 2, 2, 2, 2, 2, };
+  //wizchip_init(W5500_buff_size, W5500_buff_size);
   
-  Usart_print("Initialization complete");
+  //Usart_print("Initialization complete");
 }
-uint8_t data_buf[20] = "Hello world. I'm Lev";
+
+uint8_t gDATABUF[DATA_BUF_SIZE];
+
+uint8_t error;
+char Message[128] = "Hello world, It's a Lev";
 int main( void )
 {
   sysInit();
-  
-  
-    while(1){
-    socket(SOCKET_0, MACRAW_protocol, 0x0138, 2);
-    delay_ms(200);
-    send(SOCKET_0,data_buf,20);
-    delay_ms(200);
-    close(SOCKET_0);
+
+  uint8_t s_num = 12;
+  USART_SendData8(USART1,s_num);
+  s_get_data(0,&s_num);
+  USART_SendData8(USART1,s_num);
+
+  while(1){
+
+
+    // by timer
+    //s_num = check_sensors();
+
+    if (s_num != 0){
+      //data = s_get_data(s_num);
+      //send();
+      //s_reset(s_num);
+    }
+
+    // listenning
+
+
   }
   
   
 }
-
-
-
