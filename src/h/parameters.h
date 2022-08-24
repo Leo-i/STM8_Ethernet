@@ -4,6 +4,8 @@
 #define SOCKET_0        0
 #define SOCKET_1        1
 
+#define DESTINATION_PORT 2000
+
 #define SENSOR_COUNT    1
 
 #define USART_BAUDRATE 115200

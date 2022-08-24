@@ -12,22 +12,32 @@ typedef enum
 typedef struct{
   uint8_t num;
   struct{
-    void   (*_s_init)     (void);
-    void   (*_s_get_data) (uint8_t* buf);
-  }func;
+    void    (*_s_init)        (void);
+    // return data length and data as buffer
+    uint8_t (*_s_get_data)    (uint8_t* buf);
+    s_state (*_check_ready)   (void);
+    void    (*_reset_sensor)  (void);
+    void    (*_start_sensor)  (void);
+    void    (*_stop_sensor)   (void);
+  }driver;
 
 } Sensor;
 
 void init_sensors();
-void set_funct( uint8_t s_num, 
-                void (*_s_init)(void),
-                void (*_s_get_data) (uint8_t* buf) 
+void set_drivers( uint8_t s_num, 
+                void    (*_s_init)      (void),
+                uint8_t (*_s_get_data)  (uint8_t* buf) ,
+                s_state (*_check_ready) (void),
+                void    (*_reset_sensor)(void),
+                void    (*_start_sensor)(void),
+                void    (*_stop_sensor) (void)
                 );
-void s_get_data( uint8_t s_num, uint8_t *buf);
+uint8_t s_get_data( uint8_t s_num, uint8_t *buf);
 
 // return the first ready sensor
-// void check_sensors(){
-
-// }
+uint8_t check_sensors();
+void reset_sensor(uint8_t s_num);
+void start_sensor(uint8_t s_num);
+void stop_sensor(uint8_t s_num);
 
 #endif

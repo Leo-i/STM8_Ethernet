@@ -6,6 +6,11 @@ void set_sensor_funct();
 
 //1
 void init_gpio_sensor();
-void gpio_sensor_get_data (uint8_t* buf);
+uint8_t gpio_sensor_get_data (uint8_t* buf);
+s_state gpio_check_ready();
+void gpio_reset();
+void gpio_sensor_start();
+void gpio_sensor_stop();
+
 
 #endif
