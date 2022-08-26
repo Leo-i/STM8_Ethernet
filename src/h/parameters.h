@@ -4,7 +4,7 @@
 #define SOCKET_0        0
 #define SOCKET_1        1
 
-#define DESTINATION_PORT 2000
+#define DESTINATION_PORT 2001
 
 #define SENSOR_COUNT    1
 
@@ -44,12 +44,12 @@ typedef struct{
 #define DRIPADDR3       235    // The fourth octet of the IP address of the default router
 
 // destanation MAC-addr
-#define S1_ETHADDR0        0xF8 // The first octet of the Ethernet address 
-#define S1_ETHADDR1        0x75 // The second octet of the Ethernet address
-#define S1_ETHADDR2        0xA4 // The third octet of the Ethernet address 
-#define S1_ETHADDR3        0xFC // The fourth octet of the Ethernet address
-#define S1_ETHADDR4        0xB2 // The fifth octet of the Ethernet address 
-#define S1_ETHADDR5        0x8A // The sixth octet of the Ethernet address 
+//#define S1_ETHADDR0        0xF8 // The first octet of the Ethernet address 
+//#define S1_ETHADDR1        0x75 // The second octet of the Ethernet address
+//#define S1_ETHADDR2        0xA4 // The third octet of the Ethernet address 
+//#define S1_ETHADDR3        0xFC // The fourth octet of the Ethernet address
+//#define S1_ETHADDR4        0xB2 // The fifth octet of the Ethernet address 
+//#define S1_ETHADDR5        0x8A // The sixth octet of the Ethernet address 
 // destanation IP-addr
 #define S1_IPADDR0         169   // The first octet of the IP address of this uIP node
 #define S1_IPADDR1         254    // The second octet of the IP address of this uIP node

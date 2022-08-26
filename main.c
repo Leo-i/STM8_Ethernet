@@ -26,25 +26,26 @@ wiz_NetInfo gWIZNETINFO =
 void sysInit(){
   CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
   Usart_Init();
-  //W5500_Init();
+  W5500_Init();
   init_sensors();
   
   //Set network information
- // wizchip_setnetinfo(&gWIZNETINFO);
-  //ctlnetwork(CN_SET_NETINFO, (void*) &gWIZNETINFO);
-  //uint8_t W5500_buff_size[8] = {2, 2, 2, 2, 2, 2, 2, 2, };
-  //wizchip_init(W5500_buff_size, W5500_buff_size);
+  wizchip_setnetinfo(&gWIZNETINFO);
+  ctlnetwork(CN_SET_NETINFO, (void*) &gWIZNETINFO);
+  uint8_t W5500_buff_size[8] = {2, 2, 2, 2, 2, 2, 2, 2, };
+  wizchip_init(W5500_buff_size, W5500_buff_size);
   
   //Usart_print("Initialization complete");
 }
 
 uint8_t data[255];
 uint8_t data_length;
+
+uint8_t message_num = 0;
 int main( void )
 {
   sysInit();
   uint8_t s_num;
-
   while(1){
 
     // by timer
@@ -54,16 +55,27 @@ int main( void )
       data_length = s_get_data(s_num, data);
       eth_send();
       reset_sensor(s_num);
+      delay_ms(1000);
     }
 
     // listenning
+    
   }
-  
   
 }
 
 void eth_send(){
   
+  //add information about package number
+  char* adding = "\nmessage number: "; 
+  for(uint8_t i = 0; i < 17; i++)
+    data[data_length+i] = (uint8_t)adding[i];
+  
+  data_length += 17;
+  data[data_length] = ++message_num + 48;
+  data_length++;
+  
+  //strat sending info
   uint8_t error;
   error = socket(SOCKET_0, Sn_MR_TCP, 80, 0);
   
@@ -72,7 +84,9 @@ void eth_send(){
     return;
   }else{ 
     Usart_print("Socket created, connecting...");
+    delay_ms(100);
   }
+  
       
   uint8_t addr[4] = {S1_IPADDR0, S1_IPADDR1, S1_IPADDR2, S1_IPADDR3};
   error = connect(HTTP_SOCKET,addr,DESTINATION_PORT);
@@ -82,6 +96,7 @@ void eth_send(){
     return;
   }else{ 
     Usart_print("Connection created");
+    delay_ms(100);
   }
 
   error = send(0, data, data_length);
@@ -90,6 +105,7 @@ void eth_send(){
     return;
   }else{ 
     Usart_print("data sended");
+    delay_ms(100);
   }
   
   disconnect(SOCKET_0);
